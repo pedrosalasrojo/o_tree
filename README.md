@@ -1,2 +1,6 @@
-# o_tree
-Opportunity Tree (Moramarco D., Brunori P., and Salas-Rojo, P. 2024)
+# Opportunity tree and Reward/Compensation Scores
+
+Set of Functions to estimate the Opportunity Tree (O-tree) and the Reward and Compensation Scores as defined in Moramarco et al. (2024).
+
+
+
