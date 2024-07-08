@@ -4,18 +4,18 @@
 # Purpose: Opportunity Tree function + Scores function
 
 # The function o_tree is used to fit an opportunity tree as in Moramarco et al. (2024).
-# The function takes as input a data frame, a model formula, the name of the type partition variable
-# (e.g. "types"), the name of the outcome variable (e.g. "income"), the name of the circumstance variables
-# (e.g. "C("sex", "educ_father", ...), the name of the weights variable (e.g. "weights"), the significance level 
-# (default = 0.01), the value of the difference in means to be tested (default = 0), the value of minbucket (default = 100),
-# and the method used to merge (ctree or t-test). An option to try new splits (default = TRUE) is also included. 
+# The function takes as input a data frame (data), a model formula (model), the name of the type partition variable
+# (types, e.g. "types_np"), the name of the outcome variable (outcome, e.g. "income"), the name of the circumstance variables
+# (circum, e.g. "C("sex", "educ_father", ...), the name of the weights variable (weights, e.g. "weights"), the significance level 
+# (alp, default = 0.01), the value of the difference in means to be tested (mu, default = 0), the value of minbucket (minbucket, default = 100),
+# and the method used to merge (merge, either "ctree" or "t-test"). An option to try new splits (default = TRUE) is also included. 
 
-# The function returns the original dataset with two new columns:
-# "m.types" showing the types after merging
-# "o.types" showing the types after merging and trying a further split.
+# The function returns the original dataset (including the original type partition) with two new columns:
+# "m.types" showing the types after merging, first step of the O-tree.
+# "o.types" showing the types after merging and trying a further split, second step of the O-tree.
 
-# The Reward and Compensation Scores deliver a "results" dataframe with the main
-# Results (types, pvalues, power, and so on) to compute the score
+# The Reward and Compensation Scores deliver a "results" dataframe with the main results (types, pvalues, power, and so on) to compute the score.
+# It also produces the score.
 
 # Check libraries, install if necessary, and open.
 rm(list=ls())
@@ -45,13 +45,14 @@ o_tree <- function(data, model, types, outcome, circum, weights,
   if (all(is.na(data$weights))) {
     data$weights <- rep(1, length(data$weights))
   }
+  # Circumstances are used as factors. Comment this line if you do not want to have this.
   data[circum] <- lapply(data[circum], as.factor)
   
   # Show original types  
   print(paste0("Original types: "))
   print(paste0(sort(unique(data$types))))
   
-  # Check if there are missing values in types, outcome, circumstances or weights.
+  # Check whether there are missing values in types, outcome, circumstances or weights.
   if (any(is.na(data$types) | is.na(data$outcome) | is.na(data$weights))) {
     stop("Function stopped: there are missing values in the data.")
   }
@@ -128,11 +129,12 @@ o_tree <- function(data, model, types, outcome, circum, weights,
     
   }
   
-  # All merges have been done.  
+  # All merges have been done. Show
   print(paste0("New types after merging: "))
   print(paste0(sort(unique(data$m.types))))
   
   if(try.new == TRUE){
+    
     # Fit and store subtrees.
     newnodes<-sort(unique(data$m.types))
     subtrees<-NA
@@ -162,7 +164,7 @@ o_tree <- function(data, model, types, outcome, circum, weights,
       }
     }
     
-    # All merges have been done.  
+    # All merges have been done. Show.
     print(paste0("New types after splitting: "))
     print(paste0(sort(unique(data$o.types))))
   }
@@ -173,6 +175,11 @@ o_tree <- function(data, model, types, outcome, circum, weights,
   return(data = data)
   
 }
+
+# The reward score includes an argument to plug the name of the dataframe (data), two arguments to write the names of the type partition and the 
+# outcome of interest (respectively, types and outcome, e.g. types = "types_np", outcome = "income"), the significance level 
+# (alp, default = 0.01), the value of the difference in means to be tested (mu, default = 0), and the epsilon to obtain the power (default = 200).
+# You can easily modify the function such that the epsilon is estimated endogenously as the empirical difference across types.
 
 reward_score <- function(data, types, outcome,
                          alp = 0.01, mu = 0, eps = 200){
@@ -234,6 +241,11 @@ reward_score <- function(data, types, outcome,
   return(list(`results` = results, `score` = reward_score))
   
 }
+
+# The compensation score includes an argument to plug the name of the dataframe (data), two arguments to write the names of the type partition and the 
+# outcome of interest (respectively, types and outcome, e.g. types = "types_np", outcome = "income"), the significance level 
+# (alp, default = 0.01), the value of the difference in means to be tested (mu, default = 0), and the epsilon to obtain the power (default = 200).
+# You can easily modify the function such that the epsilon is estimated endogenously as the empirical difference across types.
 
 compen_score <- function(data, types, outcome, model, circum, 
                          alp = 0.01, mu = 0, eps = 200){
