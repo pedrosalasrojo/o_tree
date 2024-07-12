@@ -10,6 +10,8 @@ to_run.R: this script runs the functions and computes and example exercise of an
 
 data.csv: example data used to run the example.
 
+functions.pdf: document providing details on the function and its implementation in R.
+
 ## Description of the example exercise
 
 The example exercise is aimed at showing how to compute an O-tree from a given type partition. This type partition can be ad-hoc or produced by a splitting algorithm, such as Conditional Inference Trees (see Moramarco et al., 2024 for details).
