@@ -66,8 +66,13 @@ rew3 <- reward_score(otree, "o.types", "income")$score
 com3 <- compen_score(otree, types = "o.types", outcome = "income", model = model, circum = circum, eps = 1200)$score
 ```
 
-_Disclaimer_: This is a work in progress version. Do not use or cite without checking.
+_Disclaimer_: 
+
+This is a work in progress version. Do not use or cite without checking. This example is drawn for illustrative purposes. Debiased IOp can be obtained using the double debiased procedure (cross-fitting + debiased estimator) proposed in Escanciano and Terschuur (2022).
 
 *References*:
-Moramarco, D., Brunori, P. and Salas-Rojo, P. (2024) Biases in inequality of opportunity estimates: measures and solutions (mimeo)
+
+Moramarco, D., Brunori, P. and Salas-Rojo, P. (2024) "Biases in inequality of opportunity estimates: measures and solutions" (mimeo)
+
+Escanciano, J. C., and Terschuur, J. R. (2022) "Debiased semiparametric U-statistics: Machine learning inference on inequality of opportunity", ArXiv Preprint arXiv:2206.05235 (Under Review at RESTUD).
 
